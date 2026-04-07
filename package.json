@@ -3,13 +3,24 @@
   "version": "1.30.3",
   "description": "\"",
   "main": "index.js",
+  "remotion": {
+    "entryPoint": "./src/index.ts"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "studio": "npx remotion studio src/index.ts",
+    "render": "npx remotion render src/index.ts StilWagter out/stil-wagter.mp4",
+    "render:still": "npx remotion still src/index.ts StilWagter out/preview.png"
   },
   "author": "Crosstalk Solutions, LLC",
   "license": "ISC",
   "dependencies": {
     "@remotion/cli": "^4.0.446",
-    "remotion": "^4.0.446"
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "^4.0.446",
+    "typescript": "^6.0.2"
   }
 }
