@@ -8,6 +8,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Morning Rewire — 5-Step ADHD Brain Primer</title>
+
+  <!-- Open Graph / social cards so the link itself is shareable -->
+  <meta property="og:title" content="Morning Rewire — 5 steps to wake your brain up" />
+  <meta property="og:description" content="A 5-step ADHD-friendly morning game. Build a streak, beat today's puzzle, share your day. #MorningRewire" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Morning Rewire" />
+  <meta name="twitter:description" content="5 steps. 5 minutes. Brain online." />
+  <meta name="twitter:image" content="og-image.svg" />
+
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
@@ -31,16 +42,44 @@
   <template id="tpl-welcome">
     <section class="card welcome">
       <h1>Good morning ☀️</h1>
-      <p class="lede">Five tiny steps. Five minutes. Your brain online.</p>
+      <p class="lede">Five tiny steps. Five minutes. Brain online.</p>
+
+      <div class="daily-banner">
+        <div class="daily-tag">Today's challenge · Day <span id="welcomeDay">—</span></div>
+        <div class="daily-mantra" id="welcomeMantra">…</div>
+        <div class="daily-best" id="welcomeBest">No personal best yet</div>
+      </div>
+
       <ol class="preview">
         <li><span>1</span> Breathe</li>
         <li><span>2</span> Move</li>
         <li><span>3</span> Hydrate</li>
-        <li><span>4</span> Focus</li>
+        <li><span>4</span> Focus <em id="welcomeBestInline"></em></li>
         <li><span>5</span> Intent</li>
       </ol>
-      <button class="primary" data-action="start">Start</button>
-      <p class="hint">Tap "Add to Home Screen" to use it like an app.</p>
+
+      <button class="primary" data-action="start">Start the day</button>
+
+      <div class="welcome-row">
+        <button class="ghost" data-action="show-history">📅 Your streak</button>
+        <button class="ghost" data-action="invite">🎁 Invite a friend</button>
+      </div>
+
+      <p class="hint">Tap Share → Add to Home Screen to use it like an app.</p>
+    </section>
+  </template>
+
+  <template id="tpl-history">
+    <section class="card history">
+      <h2>Your streak</h2>
+      <div class="streak-big" id="historyStreakBig">0 🔥</div>
+      <p class="instruction">Last 35 mornings</p>
+      <div class="heatmap" id="historyHeatmap"></div>
+      <div class="badges" id="historyBadges"></div>
+      <div class="welcome-row">
+        <button class="primary" data-action="next">Back</button>
+        <button class="ghost" data-action="share-streak">Share streak</button>
+      </div>
     </section>
   </template>
 
@@ -91,6 +130,7 @@
     <section class="card step-focus">
       <div class="step-label">Step 4 of 5 · Focus</div>
       <h2>Tap 1 → 10 in order</h2>
+      <p class="instruction tiny">Daily challenge — everyone gets the same puzzle today.</p>
       <div class="focus-grid" id="focusGrid"></div>
       <p class="instruction" id="focusHint">Find the next number. Misses cost 1 second.</p>
       <button class="primary" data-action="next" id="focusDone" disabled>Done</button>
@@ -113,12 +153,48 @@
       <div class="confetti" id="confetti" aria-hidden="true"></div>
       <h1>Brain online ✨</h1>
       <p class="lede" id="completeIntent">Now go do the thing.</p>
+
+      <div class="share-card-wrap">
+        <canvas id="shareCanvas" width="1080" height="1920" aria-label="Your shareable result card"></canvas>
+        <div class="share-card-glow"></div>
+      </div>
+
+      <div id="milestoneBanner" class="milestone-banner" hidden></div>
+
+      <div class="share-actions">
+        <button class="primary" id="shareBtn">📲 Share my morning</button>
+        <button class="ghost" id="copyBtn">Copy link</button>
+        <button class="ghost" id="downloadBtn">Save image</button>
+      </div>
+
+      <p class="instruction tiny" id="shareHashtags">#MorningRewire · Tag a friend who needs this</p>
+
       <dl class="stats">
         <div><dt>Streak</dt><dd id="finalStreak">1🔥</dd></div>
-        <div><dt>XP today</dt><dd id="finalXp">+50★</dd></div>
-        <div><dt>Total</dt><dd id="finalTotal">50★</dd></div>
+        <div><dt>Focus</dt><dd id="finalFocus">—</dd></div>
+        <div><dt>Total XP</dt><dd id="finalTotal">50★</dd></div>
       </dl>
+
       <button class="primary" data-action="finish">Done</button>
+    </section>
+  </template>
+
+  <template id="tpl-streak">
+    <section class="card complete">
+      <h1>Day <span id="streakDayNum">1</span> 🔥</h1>
+      <p class="lede">Share your streak — invite a friend to start theirs.</p>
+
+      <div class="share-card-wrap">
+        <canvas id="streakCanvas" width="1080" height="1920"></canvas>
+      </div>
+
+      <div class="share-actions">
+        <button class="primary" id="streakShareBtn">📲 Share streak</button>
+        <button class="ghost" id="streakCopyBtn">Copy link</button>
+        <button class="ghost" id="streakDownloadBtn">Save image</button>
+      </div>
+
+      <button class="primary" data-action="next">Back</button>
     </section>
   </template>
 

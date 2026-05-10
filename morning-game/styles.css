@@ -390,3 +390,152 @@ input#intentInput:focus {
 @keyframes fall {
   to { transform: translateY(120vh) rotate(720deg); opacity: .9; }
 }
+
+/* Daily challenge banner */
+.daily-banner {
+  background: linear-gradient(135deg, rgba(255,180,84,.15), rgba(255,122,182,.15));
+  border: 1px solid rgba(255,180,84,.35);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+}
+.daily-tag {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+.daily-mantra {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.daily-best {
+  font-size: 13px;
+  color: var(--muted);
+}
+.preview em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--accent);
+  font-size: 13px;
+}
+.welcome-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.welcome-row .ghost { flex: 1; }
+.tiny { font-size: 12px; }
+
+/* Share card canvas */
+.share-card-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 50vh;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+.share-card-wrap canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px -20px rgba(255, 122, 182, .55),
+              0 0 0 1px rgba(255,255,255,.08) inset;
+  background: var(--bg-2);
+  object-fit: contain;
+}
+.share-card-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(closest-side, rgba(255,180,84,.35), transparent);
+  filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.share-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.share-actions .ghost {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+/* Milestone banner */
+.milestone-banner {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #1a0f2a;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 800;
+  font-size: 15px;
+  animation: pulse 1.4s ease-in-out infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.02); }
+}
+
+/* History / heatmap */
+.history { gap: 14px; }
+.streak-big {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(255,180,84,.4);
+}
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 8px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+}
+.heatmap-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.05);
+  position: relative;
+}
+.heatmap-cell.done {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  box-shadow: 0 4px 12px -4px rgba(255,122,182,.6);
+}
+.heatmap-cell.today {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.badge {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.badge.earned {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #1a0f2a;
+  border-color: transparent;
+  box-shadow: 0 6px 16px -6px rgba(255,180,84,.6);
+}
