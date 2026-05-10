@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0f0f1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Morning Rewire — 5-Step ADHD Brain Primer</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="streak" id="streak" aria-live="polite">🔥 0</div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="xp" id="xp" aria-live="polite">★ 0</div>
+    </header>
+
+    <main id="stage" class="stage"></main>
+
+    <footer class="footbar">
+      <button id="skipBtn" class="ghost" type="button">Skip step</button>
+      <button id="resetBtn" class="ghost" type="button">Reset day</button>
+    </footer>
+  </div>
+
+  <template id="tpl-welcome">
+    <section class="card welcome">
+      <h1>Good morning ☀️</h1>
+      <p class="lede">Five tiny steps. Five minutes. Your brain online.</p>
+      <ol class="preview">
+        <li><span>1</span> Breathe</li>
+        <li><span>2</span> Move</li>
+        <li><span>3</span> Hydrate</li>
+        <li><span>4</span> Focus</li>
+        <li><span>5</span> Intent</li>
+      </ol>
+      <button class="primary" data-action="start">Start</button>
+      <p class="hint">Tap "Add to Home Screen" to use it like an app.</p>
+    </section>
+  </template>
+
+  <template id="tpl-breathe">
+    <section class="card step-breathe">
+      <div class="step-label">Step 1 of 5 · Breathe</div>
+      <h2 id="breathePhase">Get comfy</h2>
+      <div class="breather" aria-hidden="true">
+        <div class="ring" id="breatheRing"></div>
+        <div class="ring-count" id="breatheCount">4</div>
+      </div>
+      <p class="instruction" id="breatheInstruction">Box breathing · 4 rounds</p>
+      <button class="primary" data-action="next" id="breatheDone" disabled>Done</button>
+    </section>
+  </template>
+
+  <template id="tpl-move">
+    <section class="card step-move">
+      <div class="step-label">Step 2 of 5 · Move</div>
+      <h2 id="moveMove">Get ready</h2>
+      <div class="move-illustration" id="moveIllustration">🤸</div>
+      <div class="timer-ring">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="46" class="track" />
+          <circle cx="50" cy="50" r="46" class="fill" id="moveFill" />
+        </svg>
+        <div class="timer-num" id="moveTimer">30</div>
+      </div>
+      <p class="instruction" id="moveHint">Hold the position until the ring fills.</p>
+      <button class="primary" data-action="next" id="moveDone" disabled>Done</button>
+    </section>
+  </template>
+
+  <template id="tpl-hydrate">
+    <section class="card step-hydrate">
+      <div class="step-label">Step 3 of 5 · Hydrate</div>
+      <h2>Drink water</h2>
+      <button class="glass" id="glass" aria-label="Tap glass to fill">
+        <div class="glass-water" id="glassWater"></div>
+        <div class="glass-icon">🥤</div>
+      </button>
+      <p class="instruction" id="hydrateHint">Tap the glass each gulp · aim for 5</p>
+      <button class="primary" data-action="next" id="hydrateDone" disabled>Done</button>
+    </section>
+  </template>
+
+  <template id="tpl-focus">
+    <section class="card step-focus">
+      <div class="step-label">Step 4 of 5 · Focus</div>
+      <h2>Tap 1 → 10 in order</h2>
+      <div class="focus-grid" id="focusGrid"></div>
+      <p class="instruction" id="focusHint">Find the next number. Misses cost 1 second.</p>
+      <button class="primary" data-action="next" id="focusDone" disabled>Done</button>
+    </section>
+  </template>
+
+  <template id="tpl-intent">
+    <section class="card step-intent">
+      <div class="step-label">Step 5 of 5 · Intent</div>
+      <h2>One thing today</h2>
+      <p class="instruction">Pick the single most important thing. Just one.</p>
+      <input id="intentInput" type="text" inputmode="text" maxlength="80" placeholder="Today I will…" autocomplete="off" />
+      <div class="suggestions" id="intentSuggestions"></div>
+      <button class="primary" data-action="next" id="intentDone" disabled>Lock it in</button>
+    </section>
+  </template>
+
+  <template id="tpl-complete">
+    <section class="card complete">
+      <div class="confetti" id="confetti" aria-hidden="true"></div>
+      <h1>Brain online ✨</h1>
+      <p class="lede" id="completeIntent">Now go do the thing.</p>
+      <dl class="stats">
+        <div><dt>Streak</dt><dd id="finalStreak">1🔥</dd></div>
+        <div><dt>XP today</dt><dd id="finalXp">+50★</dd></div>
+        <div><dt>Total</dt><dd id="finalTotal">50★</dd></div>
+      </dl>
+      <button class="primary" data-action="finish">Done</button>
+    </section>
+  </template>
+
+  <script src="game.js"></script>
+</body>
+</html>
