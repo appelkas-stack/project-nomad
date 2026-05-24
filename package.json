@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@remotion/cli": "^4.0.446",
+    "gstack": "^1.0.5",
     "remotion": "^4.0.446"
   }
 }
