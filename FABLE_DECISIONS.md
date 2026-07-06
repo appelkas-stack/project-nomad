@@ -5,6 +5,9 @@
 
 | ID | Date | Decision | Rationale | Status |
 |---|---|---|---|---|
+| D-015 | 2026-07-06 | **Build go-ahead** — Loop 8 started on task 0.1 (eval harness skeleton). | Human decision. | Applied |
+| D-014 | 2026-07-06 | **F1 resolved: engage upstream early** — share the M0 benchmark with the NOMAD community and explore contributing the engine upstream while owning packs/brand. Task 0.8 unblocked (executes once the benchmark exists). | Human decision; converts the fast-follower threat (R-19) into the distribution channel. | Applied |
+| D-013 | 2026-07-06 | **F2 resolved: fresh dedicated repo** for Fable (not `fable/` in this fork). This repo keeps the FABLE_*.md strategy/state files; all product code lives in the new repo. | Human decision; cleaner licensing/brand story for an open-source engine. | Applied |
 | D-012 | 2026-07-06 | MVP stack: TypeScript/Node engine + eval, llama.cpp spawned binary, SQLite+sqlite-vec, React UI; Rust single-binary deferred to M4+. | Reuses NOMAD extraction code and founder-familiar stack; speed to M0 kill-decision matters more than binary elegance. | Applied in build plan |
 | D-011 | 2026-07-06 | Kill review verdict: idea survives **conditionally** — (1) eval harness before product code, (2) pack pre-orders before content-ops, (3) NOMAD upstream engagement in phase 1. Re-sequenced plan around M0 "PROOF" milestone with explicit kill criteria. | Strongest attacks (feature-convergence window, NOMAD fast-follow, unproven WTP, CPU latency physics) are all cheaply measurable in ~4 weeks; building the engine first would be spending months to learn what M0 learns in weeks. | Binding on build plan |
 | D-010 | 2026-07-06 | **Human approved the wedge** ("All of the above"): Fable Answers + kill review + implementation plan. A4 confirmed by adoption. | Human decision. | Applied |

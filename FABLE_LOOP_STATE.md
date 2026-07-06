@@ -51,9 +51,9 @@
 
 ## 6. Next action
 
-Wedge **approved by human 2026-07-06** ("All of the above"); A4 confirmed by adoption. Kill review passed with 3 binding conditions (eval-first, WTP-before-content-ops, upstream engagement). Build plan gate passed.
+Wedge **approved by human 2026-07-06**; A4 confirmed by adoption. Kill review passed with 3 binding conditions. Build plan gate passed. **F1 = engage upstream early; F2 = fresh dedicated repo; Build = go** (D-013..D-015).
 
-**Next: Loop 8 (Build) on task 0.1 — eval harness skeleton** (`FABLE_BUILD_PLAN.md` §M0). Blocked only on founder decision points before their respective tasks: **F1** (NOMAD relationship — needed before task 0.8), **F2** (repo home — needed before M1; plan assumes `fable/` in this repo).
+**Loop 8 (Build) in progress: task 0.1 — eval harness skeleton, in the dedicated Fable repo.** This repo remains the strategy/state home (FABLE_*.md); product code lives in the new repo.
 
 ## 7. Pointers
 
