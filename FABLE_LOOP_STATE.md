@@ -1,80 +1,60 @@
 # FABLE_LOOP_STATE.md
 
 > Master state file for the FABLE LOOP OS operating on this repository.
-> Last updated: 2026-07-06 · Loop iteration: 2 · Branch: `claude/fable-loop-os-system-67ab72`
+> Last updated: 2026-07-06 · Loop iteration: 6 · Branch: `claude/fable-loop-os-system-67ab72`
 
----
+## 0. Active goal (set 2026-07-06 by human)
 
-## 1. Product Identity
+"Research, design, and build **Fable** as a revolutionary AI-native product. Start with competition and gap discovery. Do not build yet. Loop through research, gap map, product thesis, Fable narrative, and architecture. Update all Fable loop files. **Stop before implementation and give the one MVP wedge worth building.**"
 
-- **Product:** Project N.O.M.A.D. (Node for Offline Media, Archives, and Data)
-- **Owner:** Crosstalk Solutions, LLC (this repo is the `appelkas-stack` fork/clone)
-- **Version:** 1.30.3 (semantic-release managed)
-- **License:** Apache 2.0
-- **One-liner:** A self-contained, offline-first knowledge and education server ("Command Center") that orchestrates containerized tools — offline Wikipedia (Kiwix), local AI chat with RAG (Ollama + Qdrant), education (Kolibri/Khan Academy), offline maps (ProtoMaps), data tools (CyberChef), and notes (FlatNotes) — on Debian-based hardware.
-- **Positioning:** "Knowledge That Never Goes Offline." Deliberately targets *beefy, GPU-backed* hardware (unlike minimalist survival-computer competitors) to run local LLMs well.
+**Marked assumption A4:** "Fable" was not explicitly defined by the human. Interpreted as: the AI-native product to be carved out of this repo's domain (local AI + offline knowledge). All Loop 2–6 artifacts rest on A4.
 
-## 2. Target User (as stated / inferred)
+## 1. Product identity — two layers
 
-- **Stated:** Preparedness/off-grid users, homelabbers, educators, families — people who want critical knowledge + AI available without internet.
-- **Community evidence:** Public website (projectnomad.us), Discord community, public benchmark leaderboard with "Builder Tags," public roadmap (roadmap.projectnomad.us). Distribution is creator-led (Crosstalk Solutions is a known YouTube/networking brand).
-- *(Assumption — not verified in repo)*: Primary acquisition channel is the Crosstalk Solutions audience.
+- **Host repo:** Project N.O.M.A.D. v1.30.3 (Crosstalk Solutions; `appelkas-stack` fork) — offline-first knowledge/education server. As-is analysis: FABLE_ARCHITECTURE.md Part 1.
+- **Fable (the product being designed):** the **offline answer engine** — citation-first Q&A over the user's offline library, tuned for modest hardware, monetized via verified knowledge packs. Thesis: FABLE_PRODUCT_THESIS.md.
 
-## 3. Business Goal (inferred — needs human confirmation)
+## 2. Selected MVP wedge (Loop 3 output, human sign-off pending)
 
-- Open-source, no telemetry, no auth, free to install. No visible monetization in the repo (no billing code, no license gating).
-- *(Assumption)*: Value likely accrues via brand/community/hardware-guide affiliation rather than direct SaaS revenue. **This is a dangerous assumption to build on without confirmation.**
+**"Fable Answers":** ask your offline library anything → grounded answer with tappable page-level citations → honest refusal ("not in your library, closest pages:") when ungrounded → runs on 8–16GB no-GPU hardware. Free/open engine; revenue from verified knowledge packs + freshness subscription (Version 2 "Fable Library"); appliance (Version 3) is the later growth path. Full reasoning: FABLE_GAP_MAP.md.
 
-## 4. Technical Assets (verified in repo)
+## 3. Key verified market facts (details + sources in FABLE_COMPETITORS.md)
 
-| Asset | Location | Notes |
-|---|---|---|
-| Command Center app | `admin/` | AdonisJS 6 (TypeScript) + Inertia.js + React 19 + Tailwind 4 |
-| Orchestration | `admin/app/services/docker_service.ts`, `container_registry_service.ts` | Manages tool containers via dockerode |
-| AI stack | `ollama_service.ts`, `rag_service.ts`, `chat_service.ts` + Qdrant client, chonkie chunking, tesseract.js OCR, pdf-parse | Local chat + document RAG |
-| Content stack | `zim_service.ts`, `zim_extraction_service.ts` (Kiwix/ZIM), `map_service.ts` (PMTiles/ProtoMaps), `collection_*` services | Curated collections in `/collections/*.json` |
-| Jobs/queues | BullMQ queues: `downloads`, `model-downloads`, `benchmarks`; jobs in `admin/app/jobs/` | Worker commands in `package.json` |
-| Persistence | MySQL (mysql2) + better-sqlite3; models in `admin/app/models/` | 9 Lucid models incl. chat, benchmark, services, kv_store |
-| Install/ops | `install/*.sh`, `management_compose.yaml`, `Dockerfile` | Terminal-based installer for Debian; helper start/stop/update/uninstall scripts |
-| Benchmark | `benchmark_service.ts`, community leaderboard (benchmark.projectnomad.us) | Hardware scoring |
-| Docs | `admin/docs`, `FAQ.md`, in-app docs pages | |
-| Anomaly | Root `package.json` depends on `remotion` + `@remotion/cli` (added in PR #2 on this fork) | Unused by the app as far as observed; likely fork-specific experiment for video rendering |
+- 30+ competitors/substitutes mapped across 4 categories; nobody ships "ask offline, get a cited answer from curated content."
+- RAG quality is the #1 documented complaint in every leading local-AI tool.
+- Upstream NOMAD: 32,963 stars / 3,295 forks (GitHub API, 2026-07-06) — category demand proven; software-only, unmonetized, GPU-hungry, English-only.
+- Prepper Disk: documented paying buyers at $180–280; AI SKU on pre-order (3B on a Pi); sales boomed on data-deletion anxiety (404media).
+- Price anchors: Kiwix Hotspot $319 · RACHEL $500 · Umbrel $399–699 · Msty licenses $149–349/yr · Khoj's hosted SaaS died Apr 2026.
+- Anti-AI faction exists inside the target audience (NOMAD issue #456) → AI-optional is a hard requirement.
 
-## 5. Known Constraints & Posture
-
-- **No authentication by design** (README §Security). Network-level controls are the recommended mitigation; explicitly not internet-facing.
-- **Offline-first:** internet needed only for install/downloads; zero telemetry; connectivity check via `https://1.1.1.1/cdn-cgi/trace`.
-- **Test posture:** `admin/tests/` contains only `bootstrap.ts` — effectively no automated test suite. Root `package.json` test script is a stub.
-- Requires sudo/root install; Command Center controls the Docker daemon (high-privilege by nature).
-
-## 6. Missing Information (needs human input)
-
-1. **The goal.** FABLE LOOP OS was started without a `[goal]`. Is the mission: (a) audit/harden this codebase, (b) build a specific feature, (c) product/market strategy for the fork, or (d) something else (e.g., the remotion dependency hints at a video-generation direction)?
-2. Relationship of this fork (`appelkas-stack`) to upstream (`Crosstalk-Solutions`) — contribute upstream or diverge?
-3. Business intent: is monetization relevant at all, or is this purely an OSS/community project?
-
-## 7. Dangerous Assumptions (flagged)
-
-- A1: "No auth is acceptable" — acceptable only while never internet-exposed; any feature that changes exposure invalidates it.
-- A2: "The fork should follow upstream's product direction" — unconfirmed.
-- A3: "No tests" means verification of changes relies on typecheck/lint/manual QA — every Build Loop must state this explicitly.
-
-## 8. Open Loops
+## 4. Loop ledger
 
 | Loop | Status | Artifact |
 |---|---|---|
-| 1 — Context Intake | ✅ Complete (this file) | FABLE_LOOP_STATE.md |
-| 2 — Architecture Reverse-Engineering | ✅ Complete | FABLE_ARCHITECTURE.md |
-| Next | ⏸ Gated on human decision | See §9 |
+| 1 — Context Intake | ✅ | FABLE_LOOP_STATE.md |
+| 2a — Architecture Reverse-Engineering (as-is) | ✅ | FABLE_ARCHITECTURE.md Part 1 |
+| 2 — Competitive Intelligence | ✅ gate passed (30+ mapped) | FABLE_COMPETITORS.md |
+| 3 — Gap Discovery | ✅ gate passed (wedge selected) | FABLE_GAP_MAP.md |
+| 4 — Product Thesis | ✅ gate passed (w/ caveat → R-16) | FABLE_PRODUCT_THESIS.md |
+| 5 — Fable Narrative | ✅ gate passed (10-second test) | FABLE_NARRATIVE.md |
+| 6 — Architecture (target) | ✅ gate passed | FABLE_ARCHITECTURE.md Part 2 |
+| 7 — Implementation Plan | ⏸ **STOPPED per human directive** ("do not build yet") | — |
+| 14 — Adversarial Kill | Recommended before Loop 7 | — |
 
-## 9. Next Action
+## 5. Dangerous assumptions (live)
 
-Master controller default for an existing codebase: Audit Loop → Security Loop → Performance Loop → Refactor Plan → Build. But loop selection depends on the missing goal (§6.1). **Gate: need human decision** on which track to run:
-- `/loop-audit` — full codebase audit (natural next step; no product judgment required)
-- `/loop-security` — security review (high leverage given no-auth + Docker-root posture)
-- `/loop-research` / `/loop-product` — market and product strategy loops
-- `/loop-build [task]` — a specific feature
+- **A4 (critical):** Fable = offline-answer-engine interpretation of the goal. If the human meant a different product entirely, Loops 2–6 must be re-run.
+- A5: free-engine + paid-packs conversion is unproven in this niche (R-16).
+- A6: content licensing for packs (medical/manuals) is obtainable at indie cost — unvalidated (R-17).
+- A1–A3 (repo posture, fork intent, no tests): unchanged, see git history of this file.
 
-## 10. Risk Register Pointer
+## 6. Next action
 
-See `FABLE_RISKS.md`. Decisions log: `FABLE_DECISIONS.md`.
+**Gated on human decision:**
+1. **Approve the wedge** → run Loop 14 (Adversarial Kill) then Loop 7 (Implementation Plan) → Build.
+2. **Challenge A4** → redefine Fable, re-run from Loop 2 with corrected scope.
+3. Optionally first: `/loop-kill` to stress-test the wedge before committing.
+
+## 7. Pointers
+
+Decisions: FABLE_DECISIONS.md · Risks: FABLE_RISKS.md · OS spec: FABLE_LOOP_OS.md · Command: `.claude/commands/fable-loop.md`

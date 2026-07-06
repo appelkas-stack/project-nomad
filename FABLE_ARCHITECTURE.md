@@ -1,7 +1,12 @@
 # FABLE_ARCHITECTURE.md
 
-> Loop 2 artifact — Architecture Reverse-Engineering of the existing codebase.
-> Date: 2026-07-06 · Source: full repo survey. Observations cite files; inferences are marked *(inference)*.
+> Part 1: Loop 2 artifact — as-is architecture of the existing codebase (Project N.O.M.A.D.).
+> Part 2 (end of file): Loop 6 artifact — target architecture for the selected Fable wedge.
+> Date: 2026-07-06 · Observations cite files; inferences are marked *(inference)*.
+
+---
+
+# PART 1 — AS-IS (Project N.O.M.A.D. v1.30.3)
 
 ## System Diagram (text)
 
@@ -110,3 +115,81 @@ Single-node appliance by design. Vertical scaling only (GPU/VRAM for larger mode
 ## Build-vs-Buy already decided upstream
 
 Kiwix, Ollama, Qdrant, Kolibri, Protomaps, CyberChef, FlatNotes, Dozzle are all bought (OSS); the product's own IP is the orchestration UX, curated collections, easy-setup wizard, and benchmark/community layer.
+
+---
+
+# PART 2 — TARGET ARCHITECTURE: "Fable Answers" wedge (Loop 6)
+
+> Design goal: the citation-first offline answer engine (see FABLE_GAP_MAP.md §wedge, FABLE_PRODUCT_THESIS.md §MVP scope). Simple enough for a small team, strong enough to become the appliance later. Reuses NOMAD assets where they exist.
+
+## System diagram (text)
+
+```
+                       ┌──────────────── Fable node (user hardware, 8–16GB, no GPU assumed) ────────────────┐
+ Browser (LAN) ──────► │  fable-app :7777  (single service: API + UI)                                       │
+   no account          │   ├── Ask API  ──► Answer Orchestrator                                             │
+                       │   │                 ├── Retriever ──► Index Store (embedded vector+FTS, SQLite/    │
+                       │   │                 │                 sqlite-vec — no separate Qdrant container)   │
+                       │   │                 ├── Grounding Gate (confidence threshold → answer | refuse)    │
+                       │   │                 └── Generator ──► Inference Runtime (llama.cpp-server or       │
+                       │   │                                   any Ollama-compatible endpoint, 3–8B Q4)     │
+                       │   ├── Citations resolver ──► ZIM Reader (libzim) → exact source page render        │
+                       │   ├── Library Manager (add ZIM/PDF/EPUB, packs, indexing progress)                 │
+                       │   └── Indexer (background queue, per-corpus recipes)                               │
+                       │  storage: /library (ZIMs, docs) · /index (embeddings+FTS) · /models               │
+                       └────────────────────────────────────────────────────────────────────────────────────┘
+ Online only (optional): pack registry CDN (signed manifests + content) · model download mirror
+```
+
+## Component responsibilities
+
+- **Answer Orchestrator** — the product. Pipeline: query → hybrid retrieval (vector + BM25/FTS, reciprocal-rank fusion) → rerank (small cross-encoder, CPU-friendly) → grounding gate → constrained generation with inline citation markers → citation verification pass (every claim sentence must map to a retrieved chunk, else strip/refuse).
+- **Grounding Gate** — if top-k relevance < threshold: return honest-degradation response ("not in your library") + closest pages. This is a hard product invariant, not a tuning knob.
+- **Per-corpus recipes** — chunking/embedding/rerank parameters keyed by content type (encyclopedia / manual / textbook / reference), shipped as versioned config with each pack; recipe evals run in CI.
+- **Index Store** — embedded (SQLite + sqlite-vec + FTS5). Rationale: one fewer container than NOMAD's Qdrant, works on 4GB machines, single-file backup. Qdrant remains a pluggable backend for big libraries *(build-vs-buy: embed by default, scale out optionally)*.
+- **Inference Runtime** — llama.cpp-server bundled (no Docker-in-Docker, no Ollama dependency) but speaks the OpenAI-compatible protocol so any Ollama/LM Studio endpoint can be pointed at instead (answers NOMAD issue #292 remote-Ollama demand).
+- **ZIM Reader** — libzim page rendering for citation targets; doubles as the AI-off reading mode (anti-AI faction requirement).
+- **Pack system** — signed manifest (content hash, version, provenance metadata, recipe version, license) → download → verify → index. Freshness subscription = access to updated manifests; everything already downloaded works forever.
+
+## Data flow (ask path)
+
+question → embed (local, ~100ms) → hybrid search index (~50ms) → rerank top-40→8 (~1–3s CPU) → gate → prompt with numbered chunks → 3–8B generation with citation markers (~5–8s CPU) → verify citations → render answer + tappable sources. **p50 target ≤10s on 16GB no-GPU** (thesis metric).
+
+## API design (minimal)
+
+`POST /api/ask` (SSE stream: tokens + citation events) · `GET /api/sources/:id` (rendered page) · `GET/POST /api/library` (list/add/delete content) · `GET /api/packs` + `POST /api/packs/:id/install` · `GET /api/jobs` (indexing progress) · `GET /api/health` (real checks: index, runtime, disk).
+
+## Frontend
+
+Single-page app, two primary surfaces: **Ask** (answer + citation rail + source viewer) and **Library** (packs, content, indexing). Deliberately not a chat-app clone — answers are documents with receipts, not bubbles. Reuse NOMAD's React/Tailwind conventions where code is shared.
+
+## Database schema (embedded SQLite)
+
+`documents` (id, source_type zim|pdf|epub, path, title, pack_id, version) · `chunks` (id, doc_id, seq, text, page_ref, embedding BLOB, fts-indexed) · `packs` (id, version, manifest_json, installed_at) · `questions` (id, text, answered bool, grounded bool, latency_ms — local-only quality telemetry, never transmitted) · `settings` (kv).
+
+## Security architecture (fixing NOMAD's posture, not inheriting it)
+
+- Same LAN-appliance model BUT: **CSRF enabled from day one**, no wildcard-CORS, no Docker-socket access (nothing to orchestrate — single process + bundled runtime), optional PIN for settings/library mutation, signed packs (supply-chain integrity), no telemetry.
+- AI-specific: retrieved content is data, not instructions (prompt-injection hardening on chunk boundaries); citation-verification pass limits leakage of ungrounded model priors.
+
+## Observability / failure modes
+
+Local-only metrics (grounded-rate, refusal-rate, latency) surfaced in a quality panel — the user can see the benchmark. Failure modes: model too big for RAM → auto-select smaller quant with warning; index corruption → rebuild from library; pack registry unreachable → everything degrades to fully-offline gracefully (that's the product promise).
+
+## Scaling strategy
+
+Vertical only (bigger model if GPU present — auto-detect and upgrade recipe). The same binary/image becomes the appliance firmware later (Version 3 path). Multi-node is anti-scope.
+
+## Build-vs-buy
+
+Buy/reuse: llama.cpp, sqlite-vec, libzim, ZIM ecosystem, existing NOMAD extraction code (`zim_extraction_service.ts` logic), app-store packaging (Umbrel/TrueNAS/Runtipi templates). Build: orchestrator, grounding gate, citation verification, recipes, pack format, eval harness — the five things that ARE the product.
+
+## Tradeoffs
+
+- Embedded index vs Qdrant: chose reach (low-end hardware) over max scale — pluggable escape hatch retained.
+- Bundled llama.cpp vs require-Ollama: chose zero-dependency install over ecosystem familiarity — compatible endpoint keeps both.
+- Not building on the full NOMAD monolith: Fable ships as one focused service that NOMAD (and Umbrel, and TrueNAS) can host — avoids inheriting the no-auth/Docker-socket posture and the MySQL+Redis+workers stack that excludes small hardware.
+
+## Gate check (Loop 6)
+
+Simple enough to build (5 owned components, everything else commodity), strong enough to scale (appliance path preserved, GPU auto-upgrade, pluggable index) — **gate PASSED**. → Loop 7 (Implementation Plan) is the next loop, NOT run: user directive is to stop before implementation.
