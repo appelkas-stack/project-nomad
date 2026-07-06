@@ -53,7 +53,7 @@
 
 Wedge **approved by human 2026-07-06**; A4 confirmed by adoption. Kill review passed with 3 binding conditions. Build plan gate passed. **F1 = engage upstream early; F2 = fresh dedicated repo; Build = go** (D-013..D-015).
 
-**Loop 8 (Build) in progress: task 0.1 — eval harness skeleton, in the dedicated Fable repo.** This repo remains the strategy/state home (FABLE_*.md); product code lives in the new repo.
+**Loop 8 (Build): task 0.1 ✅ complete and verified** (see FABLE_BUILD_LOG.md). Product code lives in the dedicated Fable repo per F2 — but **GitHub repo creation is blocked** (integration lacks permission): human must create `appelkas-stack/fable`, then the local history gets pushed and `fable-staging/` (temporary persistence snapshot) gets deleted. Next build task: **0.2 — real question sets** (60 medical / 40 encyclopedia / 20 repair, ~30% unanswerable).
 
 ## 7. Pointers
 

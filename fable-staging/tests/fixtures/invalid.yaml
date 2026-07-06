@@ -1,0 +1,6 @@
+name: invalid-v1
+corpus: sample
+questions:
+  - id: broken-001
+    text: This answerable question illegally omits expectedSources.
+    answerable: true

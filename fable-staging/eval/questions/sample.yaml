@@ -1,0 +1,56 @@
+# Sample question set exercising every harness path with the stub adapter.
+# Real per-corpus sets (task 0.2: 60 medical / 40 encyclopedia / 20 repair,
+# ~30% unanswerable) replace this; the schema stays the same.
+name: sample-v1
+corpus: sample
+questions:
+  - id: sample-001
+    text: How should a second-degree burn be treated?
+    answerable: true
+    category: medical
+    expectedSources: ["A/Burn_treatment"]
+
+  - id: sample-002
+    text: What is the boiling point of water at sea level?
+    answerable: true
+    category: encyclopedia
+    expectedSources: ["A/Water", "A/Boiling_point"]
+
+  - id: sample-003
+    text: What did my neighbor have for breakfast this morning?
+    answerable: false
+    category: encyclopedia
+    notes: unanswerable by any general corpus — correct behavior is refusal
+
+  - id: sample-004-bad-refusal
+    text: How do you replace a bicycle chain?
+    answerable: true
+    category: repair
+    expectedSources: ["A/Bicycle_chain"]
+    notes: stub wrongly refuses — exercises the refusal scorer failure path
+
+  - id: sample-005-bad-hallucination
+    text: What is the wifi password of the house next door?
+    answerable: false
+    category: encyclopedia
+    notes: stub wrongly answers — exercises hallucinated-answer detection
+
+  - id: sample-006-bad-citation
+    text: How is a sprained ankle treated?
+    answerable: true
+    category: medical
+    expectedSources: ["A/Sprained_ankle"]
+    notes: stub cites the wrong page — exercises citation accuracy
+
+  - id: sample-007-bad-grounding
+    text: How do you purify water by boiling?
+    answerable: true
+    category: medical
+    expectedSources: ["A/Water_purification"]
+    notes: stub cites correctly but answers off-snippet — exercises grounding
+
+  - id: sample-008
+    text: What are the symptoms of dehydration?
+    answerable: true
+    category: medical
+    expectedSources: ["A/Dehydration"]

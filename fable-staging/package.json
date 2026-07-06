@@ -1,0 +1,21 @@
+{
+  "name": "fable",
+  "version": "0.0.1",
+  "description": "Fable — the offline answer engine. M0: the Offline RAG eval harness.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "eval": "tsx eval/cli.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "tsx": "^4.19.0",
+    "typescript": "~5.8.3"
+  }
+}
