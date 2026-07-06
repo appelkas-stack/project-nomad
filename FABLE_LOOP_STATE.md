@@ -1,7 +1,7 @@
 # FABLE_LOOP_STATE.md
 
 > Master state file for the FABLE LOOP OS operating on this repository.
-> Last updated: 2026-07-06 · Loop iteration: 6 · Branch: `claude/fable-loop-os-system-67ab72`
+> Last updated: 2026-07-06 · Loop iteration: 8 (Loops 14 + 7 complete) · Branch: `claude/fable-loop-os-system-67ab72`
 
 ## 0. Active goal (set 2026-07-06 by human)
 
@@ -38,8 +38,9 @@
 | 4 — Product Thesis | ✅ gate passed (w/ caveat → R-16) | FABLE_PRODUCT_THESIS.md |
 | 5 — Fable Narrative | ✅ gate passed (10-second test) | FABLE_NARRATIVE.md |
 | 6 — Architecture (target) | ✅ gate passed | FABLE_ARCHITECTURE.md Part 2 |
-| 7 — Implementation Plan | ⏸ **STOPPED per human directive** ("do not build yet") | — |
-| 14 — Adversarial Kill | Recommended before Loop 7 | — |
+| 14 — Adversarial Kill | ✅ survives, conditionally (3 binding conditions) | FABLE_KILL_REVIEW.md |
+| 7 — Implementation Plan | ✅ gate passed (task 0.1 atomic + testable) | FABLE_BUILD_PLAN.md |
+| 8 — Build | ⏸ Ready — awaiting go-ahead + founder decisions F1/F2 | — |
 
 ## 5. Dangerous assumptions (live)
 
@@ -50,10 +51,9 @@
 
 ## 6. Next action
 
-**Gated on human decision:**
-1. **Approve the wedge** → run Loop 14 (Adversarial Kill) then Loop 7 (Implementation Plan) → Build.
-2. **Challenge A4** → redefine Fable, re-run from Loop 2 with corrected scope.
-3. Optionally first: `/loop-kill` to stress-test the wedge before committing.
+Wedge **approved by human 2026-07-06** ("All of the above"); A4 confirmed by adoption. Kill review passed with 3 binding conditions (eval-first, WTP-before-content-ops, upstream engagement). Build plan gate passed.
+
+**Next: Loop 8 (Build) on task 0.1 — eval harness skeleton** (`FABLE_BUILD_PLAN.md` §M0). Blocked only on founder decision points before their respective tasks: **F1** (NOMAD relationship — needed before task 0.8), **F2** (repo home — needed before M1; plan assumes `fable/` in this repo).
 
 ## 7. Pointers
 
