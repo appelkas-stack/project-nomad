@@ -72,6 +72,7 @@
     "@adonisjs/transmit": "^2.0.2",
     "@adonisjs/transmit-client": "^1.0.0",
     "@adonisjs/vite": "^4.0.0",
+    "@anthropic-ai/sdk": "^0.82.0",
     "@chonkiejs/core": "^0.0.7",
     "@headlessui/react": "^2.2.4",
     "@inertiajs/react": "^2.0.13",
