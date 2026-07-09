@@ -7,6 +7,7 @@
 |
 */
 import BenchmarkController from '#controllers/benchmark_controller'
+import TextToVideoController from '#controllers/text_to_video_controller'
 import ChatsController from '#controllers/chats_controller'
 import DocsController from '#controllers/docs_controller'
 import DownloadsController from '#controllers/downloads_controller'
@@ -23,6 +24,9 @@ import router from '@adonisjs/core/services/router'
 import transmit from '@adonisjs/transmit/services/main'
 
 transmit.registerRoutes()
+
+router.get('/text-to-video', [TextToVideoController, 'index'])
+router.post('/api/text-to-video/render', [TextToVideoController, 'render'])
 
 router.get('/', [HomeController, 'index'])
 router.get('/home', [HomeController, 'home'])

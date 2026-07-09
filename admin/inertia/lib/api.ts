@@ -689,6 +689,16 @@ class API {
       return response.data
     })()
   }
+
+  async renderTextToVideo(text: string) {
+    return catchInternal(async () => {
+      const response = await this.client.post<{ success: boolean; videoUrl: string; message?: string }>(
+        '/text-to-video/render',
+        { text }
+      )
+      return response.data
+    })()
+  }
 }
 
 export default new API()
